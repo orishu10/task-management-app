@@ -1,0 +1,53 @@
+{
+  "name": "apolo-server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "task-manegment-app/apolo-server/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/task-manegment-app/apolo-server",
+        "main": "task-manegment-app/apolo-server/src/main.ts",
+        "tsConfig": "task-manegment-app/apolo-server/tsconfig.app.json",
+        "assets": ["task-manegment-app/apolo-server/src/assets"],
+        "webpackConfig": "task-manegment-app/apolo-server/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "apolo-server:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "apolo-server:build:development"
+        },
+        "production": {
+          "buildTarget": "apolo-server:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "task-manegment-app/apolo-server/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
