@@ -22,13 +22,14 @@ export default function Register() {
                 variables: {
                     email,
                     password,
+                    username: name, 
                 },
             });
-
-            if (data.signIn.success) {
+    
+            if (data.signUp.success) { 
                 navigate('/signin');
             } else {
-                setError(data.signIn.errorMessage);
+                setError(data.signUp.errorMessage); 
             }
         } catch (error) {
             console.error("Error signing up:", error);
@@ -37,7 +38,7 @@ export default function Register() {
             setLoading(false);
         }
     };
-
+    
     return (
         <div className="flex min-h-screen items-center justify-center bg-indigo-100">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">

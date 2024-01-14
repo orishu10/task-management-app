@@ -1,30 +1,33 @@
 import { Sequelize } from 'sequelize';
 import pg from 'pg';
-
-const ConnectionString = process.env.DB_URI || "postgres://postgres:Ori123456!@localhost:5432/task-managment";
-
-
-export const sequelize = new Sequelize({
-  dialect: 'postgres',
-  host: 'localhost',
-  port: 5432, 
-  username: 'postgres',
-  password: 'Ori123456!', 
-  database: 'postgres', 
-  dialectModule: pg   
-});
+import { QueryTypes } from 'sequelize';
 
 
+const ConnectionString = process.env.DB_URI || "postgres://postgres:Ori123456!@localhost:5432/postgres/Users";
 
 
-
-// export const sequelize = new Sequelize(ConnectionString ,{
-//   dialectModule: require('pg'),
+// export const sequelize = new Sequelize({
+//   dialect: 'postgres',
+//   host: 'localhost',
+//   port: 5432, 
+//   username: 'postgres',
+//   password: 'Ori123456!', 
+//   database: 'postgres', 
+//   dialectModule: pg   
 // });
+
+console.log(ConnectionString);
+
+
+
+
+export const sequelize = new Sequelize(ConnectionString);
 
 export async function connectToDB() {
   try {
     await sequelize.authenticate();
+    const users = await sequelize.query("SELECT * FROM users", { type: QueryTypes.SELECT });
+    console.log(users,"SELECT");
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

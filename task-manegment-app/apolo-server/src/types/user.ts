@@ -7,6 +7,7 @@ export interface RegisterUserAttributes {
 
 
   export interface UserInterface {
+    registerInput(registerInput: any, arg1: string): unknown;
     id : string;
     username: string;
     email: string;

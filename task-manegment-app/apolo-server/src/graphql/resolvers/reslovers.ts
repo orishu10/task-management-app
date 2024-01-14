@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-express";
-import { userRegister, userLogin } from "../../dal/usersDal";
+import { userRegister, userLogin,findUserById } from "../../dal/usersDal";
 import { Request, Response } from 'express';
 import { ResponseUserAttributes, RegisterUserAttributes } from '../../types/user';
 
@@ -23,17 +23,19 @@ const users = [
 
 const resolvers = {
     Query: {
-        users: () => {
-            return users;
+        userName:async (_:any, args:any) => {
+            const user = findUserById(args.id);
+            return user;
         }
 
     },
     Mutation: {
 
-        registerUser: async (_:any, args: User) => {
+        registerUser: async (_:any, args: any) => {
             try {
                 console.log("args", args);
-                const data = await userRegister(args);
+                const data = await userRegister(args.registerInput);
+                console.log(data);
                 return data; 
             } catch (error) {
                 throw new Error('Failed to register user');

@@ -81,31 +81,32 @@ const wsServerCleanup = useServer({ schema }, wsServer);
     // starting the apollo server to expose endoint to client
     await apolloServer.start();
     app.use("/graphql", bodyParser.json(), expressMiddleware(apolloServer, 
-        {
-        context: async ({ req }) => {
-            const token = req.headers.authorization || '';
-            // Try to retrieve a user with the token
-            const user = await findUserByEmail(token);
-            if (!user)
-            // throwing a `GraphQLError` here allows us to specify an HTTP status code,
-            // standard `Error`s will have a 500 status code by default
-            throw new GraphQLError('User is not authenticated', {
-              extensions: {
-                code: 'UNAUTHENTICATED',
-                http: { status: 401 },
-              },
-            });
+        // {
+        // context: async ({ req }) => {
+        //     const token = req.headers.authorization || '';
+        //     console.log(token ,"test token main");
+        //     // Try to retrieve a user with the token
+        //     const user = await findUserByEmail(token);
+        //     if (!user)
+        //     // throwing a `GraphQLError` here allows us to specify an HTTP status code,
+        //     // standard `Error`s will have a 500 status code by default
+        //     throw new GraphQLError('User is not authenticated', {
+        //       extensions: {
+        //         code: 'UNAUTHENTICATED',
+        //         http: { status: 401 },
+        //       },
+        //     });
         
-            // Add the user to the context
-            return { user };
-        }}
+        //     // Add the user to the context
+        //     return { user };
+        // }}
         ));
 })();
 
 
 httpServer.listen(port, () => {
 connectToDB()
-  console.log(`🚀 Query endpoint ready at http://localhost:${port}/graphql`);
+  console.log(`🚀 Query endpoint ready at http://localhost:${port}/graphql ❤️`);
     console.log(
         `🚀 Subscription endpoint ready at ws://localhost:${port}/subscriptions`
     );

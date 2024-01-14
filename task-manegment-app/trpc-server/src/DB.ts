@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+// We didn't need to destructure the result here - the results were returned directly
 
 const ConnectionString = "postgres://ori:Ori123456!@localhost:5432/postgres";
 
@@ -18,8 +19,9 @@ export const sequelize = new Sequelize({
 
 export async function connectToDB() {
   try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+     await sequelize.authenticate();
+     
+    console.log('Connection has been established successfully.❤️');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }

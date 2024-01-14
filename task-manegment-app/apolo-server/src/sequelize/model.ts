@@ -31,7 +31,15 @@ const User = sequelize.define<Model<ResponseUserAttributes,RegisterUserAttribute
   message: {
     type: DataTypes.STRING,
   },
-
+//   createdAt : {
+//     defaultValue: null,
+//     allowNull: true,
+//   }
+  
+// updatedAt : {
+//       defaultValue: null,
+//       allowNull: true,
+//     }
 });
 
 

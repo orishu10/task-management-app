@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { GraphQLError } from 'graphql';
 import {v4 as uuidv4} from "uuid"
+import { log } from 'console';
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
@@ -13,16 +14,18 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 export async function findUserByEmail(email: string) {
         return await User.findOne({ where: { email } });
 }
+export async function findUserById(id: string) {
+        return await User.findOne({ where: { id } });
+}
 export async function findUserByToken(token: string) {
    
 }
-
 
 async function validatePassword(password: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
 }
 
-function generateToken(userId: number): string {
+function generateToken(userId: string): string {
     return jwt.sign({ id: userId }, JWT_SECRET);
 }
 
@@ -34,11 +37,11 @@ function verifyToken(token: string) {
       console.log(error);
     }
   }
-  async function userRegister(user: UserInterface): Promise<{ token: string, message: string, id: string } | string> {
+  async function userRegister(user: any): Promise<{ token: string, message: string, id: string } | string> {
     const { username, email, password } = user;
+    log(user, "user");
     if (email === "") console.log("write email!! not empy string \"\"");
     console.log("email", email);
-    
     if (!username || !email || !password) {
       return 'Please provide username, email, and password';
     }
@@ -51,13 +54,14 @@ function verifyToken(token: string) {
       const id = uuidv4();
       const newUser = await User.create({ username, email, password_hash, id });
       const userSignd = newUser.get();
-      const token = generateToken(userSignd.id as unknown as number);
+      const token = generateToken(userSignd.id);
       return { id, token, message: 'User created successfully' };
     } catch (error) {
       console.error(error);
       return 'Internal server error';
     }
   }
+
   
   async function userLogin(email: string, password: string): Promise<any> {
     if (!email || !password) {
@@ -65,6 +69,8 @@ function verifyToken(token: string) {
     }
     try {
       const existingUser = await findUserByEmail(email);
+      console.log("existingUser", existingUser);
+      
       const userValdite = existingUser?.get();
       if (!userValdite) {
         throw new GraphQLError('we couldn\'t find this user', {

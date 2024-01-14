@@ -20,7 +20,7 @@ function CreateProjectPage() {
     const addAssignment = () => {
       const newAssignment = {
         id: uuidv4() , 
-        title: newAssignmentTitle,
+        title: name,
         isComplete: false
       };
       setAssignments([...assignments, newAssignment]);
