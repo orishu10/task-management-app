@@ -80,8 +80,9 @@ const wsServerCleanup = useServer({ schema }, wsServer);
 (async function () {
     // starting the apollo server to expose endoint to client
     await apolloServer.start();
-    app.use("/graphql", bodyParser.json(), expressMiddleware(apolloServer, {
-        context: async ({ req, res }) => {
+    app.use("/graphql", bodyParser.json(), expressMiddleware(apolloServer, 
+        {
+        context: async ({ req }) => {
             const token = req.headers.authorization || '';
             // Try to retrieve a user with the token
             const user = await findUserByEmail(token);
@@ -97,7 +98,8 @@ const wsServerCleanup = useServer({ schema }, wsServer);
         
             // Add the user to the context
             return { user };
-        }}));
+        }}
+        ));
 })();
 
 

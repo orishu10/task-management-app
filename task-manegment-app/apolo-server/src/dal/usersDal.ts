@@ -1,23 +1,22 @@
 import { Request, Response } from 'express';
 import User from '../sequelize/model';
-import {RegisterResponsetBody} from '../types/user'
+import {RegisterUserAttributes,UserInterface} from '../types/user'
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { GraphQLError } from 'graphql';
+import {v4 as uuidv4} from "uuid"
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 
 export async function findUserByEmail(email: string) {
-    return await User.findOne({ where: { email } });
+        return await User.findOne({ where: { email } });
 }
 export async function findUserByToken(token: string) {
-    //?
+   
 }
 
-async function createUser(username: string, email: string, passwordHash: string) {
-    return User.create({ username, email, password_hash: passwordHash });
-}
 
 async function validatePassword(password: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
@@ -27,53 +26,63 @@ function generateToken(userId: number): string {
     return jwt.sign({ id: userId }, JWT_SECRET);
 }
 
-async function userRegister(req: Request, res: Response): Promise<Response> {
-    const { username, email, password } = req.body;
+
+function verifyToken(token: string) {
+    try {
+      return jwt.verify(token, JWT_SECRET);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function userRegister(user: UserInterface): Promise<{ token: string, message: string, id: string } | string> {
+    const { username, email, password } = user;
+    if (email === "") console.log("write email!! not empy string \"\"");
+    console.log("email", email);
+    
     if (!username || !email || !password) {
-        return res.status(400).json({ message: 'Please provide username, email, and password' });
+      return 'Please provide username, email, and password';
     }
-
     try {
-        const existingUser = await findUserByEmail(email);
-        if (existingUser) {
-            return res.status(409).json({ message: 'Email already in use' });
-        }
-
-        const passwordHash = await bcrypt.hash(password, 10);
-        const newUser = await createUser(username, email, passwordHash);
-        
-        const token = generateToken(newUser.id);
-        return res.status(201).json({ token, message: 'User created successfully' });
+      const existingUser = await findUserByEmail(email);
+      if (existingUser) {
+        return 'Email already in use';
+      }
+      const password_hash = await bcrypt.hash(password, 10);
+      const id = uuidv4();
+      const newUser = await User.create({ username, email, password_hash, id });
+      const userSignd = newUser.get();
+      const token = generateToken(userSignd.id as unknown as number);
+      return { id, token, message: 'User created successfully' };
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal server error' });
+      console.error(error);
+      return 'Internal server error';
     }
-}
-
-
-async function login(req: Request, res: Response): Promise<Response> {
-    const { email, password } = req.body;
+  }
+  
+  async function userLogin(email: string, password: string): Promise<any> {
     if (!email || !password) {
-        return res.status(400).json({ message: 'Please provide email and password' });
+      return 'Please provide email and password';
     }
-
     try {
-        const existingUser = await findUserByEmail(email);
-        if (!existingUser) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        const isMatch = await validatePassword(password, existingUser.password_hash);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        const token = generateToken(existingUser.id);
-        return res.status(200).json({ token, message: 'User logged in successfully' });
+      const existingUser = await findUserByEmail(email);
+      const userValdite = existingUser?.get();
+      if (!userValdite) {
+        throw new GraphQLError('we couldn\'t find this user', {
+          extensions: {
+            http: { status: 200 },
+          },
+        });
+      }
+      const isMatch = await validatePassword(password, userValdite.password_hash);
+      if (!isMatch) {
+        return 'Invalid email or password';
+      }
+      return 'User logged in successfully';
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal server error' });
+      console.error(error);
+      return 'Internal server error';
     }
-}
+  }
+  
 
-export { userRegister, login };
+export { userRegister, userLogin  };

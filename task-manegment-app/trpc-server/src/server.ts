@@ -4,7 +4,8 @@ import { publicProcedure, router } from './trpc';
 const appRouter = router({
   userList: publicProcedure
     .query(async () => {
-      const users = await sequelize.user.findMany();
+      const users = 12
+      // await sequelize.user.findMany();
       return users;
     }),
 });

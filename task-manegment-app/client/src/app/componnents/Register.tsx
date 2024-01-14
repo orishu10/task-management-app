@@ -6,37 +6,38 @@ import { SIGN_UP_MUTATION } from '../typeDefs.js';
 export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-  
+
     const [signUpMutation] = useMutation(SIGN_UP_MUTATION);
-  
-    const handleSubmit = async (e:any) => {
-      e.preventDefault();
-      setError(""); 
-      try {
-        setLoading(true);
-        const { data } = await signUpMutation({
-          variables: {
-            email,
-            password,
-          },
-        });
-  
-        if (data.signIn.success) {
-          navigate('/signin');
-        } else {
-          setError(data.signIn.errorMessage);
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        setError("");
+        try {
+            setLoading(true);
+            const { data } = await signUpMutation({
+                variables: {
+                    email,
+                    password,
+                },
+            });
+
+            if (data.signIn.success) {
+                navigate('/signin');
+            } else {
+                setError(data.signIn.errorMessage);
+            }
+        } catch (error) {
+            console.error("Error signing up:", error);
+            setError("An error occurred while signing up.");
+        } finally {
+            setLoading(false);
         }
-      } catch (error) {
-        console.error("Error signing up:", error);
-        setError("An error occurred while signing up.");
-      } finally {
-        setLoading(false);
-      }
     };
-  
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-indigo-100">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -50,20 +51,22 @@ export default function Register() {
                     Sign up
                 </h2>
                 <form className="mt-6 space-y-6" action="#" method="POST">
-                    {/* <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-             Full name
-            </label>
-            <div className="mt-1">
-              <input
-                id="name"
-                name="name"
-                type="name"
-                required
-                className="w-full px-4 py-2 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
-          </div> */}
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                            Full name
+                        </label>
+                        <div className="mt-1">
+                            <input
+                                onChange={(e) => setName(e.target.value)}
+
+                                id="name"
+                                name="name"
+                                type="name"
+                                required
+                                className="w-full px-4 py-2 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            />
+                        </div> 
+                    </div>
                     {/* Email input */}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -71,7 +74,7 @@ export default function Register() {
                         </label>
                         <div className="mt-1">
                             <input
-                              onChange={(e)=> setEmail(e.target.value)}
+                                onChange={(e) => setEmail(e.target.value)}
 
                                 id="email"
                                 name="email"
@@ -109,7 +112,7 @@ export default function Register() {
                         </div>
                         <div className="mt-1">
                             <input
-                            onChange={(e)=> setPassword(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 id="password"
                                 name="password"
                                 type="password"
@@ -120,10 +123,10 @@ export default function Register() {
                         </div>
                     </div>
                     <div>
-            {error && (
-              <p id="email-error" className="text-red-600 text-center">{error}</p>
-            )}
-          </div>
+                        {error && (
+                            <p id="email-error" className="text-red-600 text-center">{error}</p>
+                        )}
+                    </div>
 
 
                     <div>

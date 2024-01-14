@@ -3,9 +3,18 @@ import { Sequelize } from 'sequelize';
 const ConnectionString = "postgres://ori:Ori123456!@localhost:5432/postgres";
 
 
-export const sequelize = new Sequelize(ConnectionString ,{
-  dialectModule: require('pg'),
+export const sequelize = new Sequelize({
+  dialect: 'postgres',
+  host: 'localhost',
+  port: 5432, 
+  username: 'postgres',
+  password: 'Ori123456!', 
+  database: 'postgres', 
+  dialectModule: require('pg')   
 });
+
+
+
 
 export async function connectToDB() {
   try {

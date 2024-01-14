@@ -2,10 +2,12 @@ import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type User {
-    id: ID!
+    id: String!
     username: String!
     email: String!
     password: String!
+    token: String
+    message: String
   }
 
   input RegisterInput {
@@ -20,26 +22,26 @@ const typeDefs = gql`
   }
 
   type Query {
-    getUser(id: ID!): User
-    user: User  
-  }
-
-  type Mutation {
-    registerUser(registerInput: RegisterInput!): RegisterResponse!
-    loginUser(loginInput: LoginInput!): LoginResponse!
-  }
+    getUser(id: String): User
+    user: User 
+    users: [User!]
+} 
 
   type RegisterResponse {
     success: Boolean!
     user: User
+    token: String
     errorMessage: String
   }
 
   type LoginResponse {
     success: Boolean!
-    user: User
     errorMessage: String
   }
+  type Mutation {
+  registerUser(registerInput: RegisterInput!): RegisterResponse!
+  loginUser(loginInput: LoginInput!): LoginResponse!
+}
 `;
 
 export default typeDefs;

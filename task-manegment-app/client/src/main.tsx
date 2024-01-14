@@ -8,7 +8,7 @@ import './styles.css'
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  uri: 'http://localhost:3333',
+  uri: 'http://localhost:3333/graphql',
 });
 
 const root = ReactDOM.createRoot(
