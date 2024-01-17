@@ -7,7 +7,11 @@ import './App.css'
 import UserPage from './componnents/UserPage.js';
 import Register from './componnents/Register.js';
 import Projects from './componnents/Projects.js';
+import {main} from './trpc.js';
 import CreateProjectPage from './componnents/CreateProjectPage.js';
+
+
+main()
 export function App() {
   return (
     <>

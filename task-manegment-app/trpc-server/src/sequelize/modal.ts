@@ -1,33 +1,39 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../DB';
-// import { ResponseUserAttributes, RegisterUserAttributes } from '../types/user'
 
+interface PostProject {
+  title: string;
+  assignments: string[];
+  userId: string;
+}
 
+interface ResponseUserAttributes extends PostProject {
+  id: string;
+}
 
-
-const Project = sequelize.define('projects',
- {
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
+const Project = sequelize.define<Model<ResponseUserAttributes, PostProject>>(
+  'projects',
+  {
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    },
+    assignments: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+    },
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+    },
   },
-  
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
-  },
- assigmant : {
-    type: DataTypes.ARRAY,
-    allowNull: false,
-  },
-createdAt : {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-    
-
-});
-
+  {
+    tableName: 'projects',
+  }
+);
 
 export default Project;

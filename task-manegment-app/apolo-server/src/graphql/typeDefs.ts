@@ -4,11 +4,16 @@ const typeDefs = gql`
   type User {
     id: String!
     username: String!
-    email: String!
-    password: String!
+    email: String
+    password: String
     token: String
-    message: String
   }
+  type UserForLogin {
+    id: String!
+    username: String!
+    email: String!
+    password_hash: String!
+    }
 
   input RegisterInput {
     username: String!
@@ -24,24 +29,22 @@ const typeDefs = gql`
   type Query {
     getUser(id: String): User
     user: User 
-    usersName: User
-    users: [User!]
 } 
 
   type RegisterResponse {
     success: Boolean!
+    message: String!
     user: User
-    token: String
-    errorMessage: String
   }
 
   type LoginResponse {
     success: Boolean!
-    errorMessage: String
+    message: String!
+    user: User!
   }
   type Mutation {
-  registerUser(registerInput: RegisterInput!): RegisterResponse!
-  loginUser(loginInput: LoginInput!): LoginResponse!
+  signUp(username:String!,email:String!,password:String!):RegisterResponse!
+  signIn(email:String!,password:String!):LoginResponse!
 }
 `;
 

@@ -1,52 +1,77 @@
 import { gql } from '@apollo/client';
 
 const typeDefs = gql`
+  type User {
+    id: String!
+    username: String!
+    email: String
+    password: String
+    token: String
+    message: String
+  }
+  type UserForLogin {
+    id: String!
+    username: String!
+    email: String!
+    password_hash: String!
+    }
   extend type Query {
     isLoggedIn: Boolean!
   }
 
-  type AuthResponse {
+  input RegisterInput {
+    email: String!
+    username: String!
+    password: String!
+    }
+
+  
+  type AuthResponseSignIn {
     success: Boolean!
     token: String 
-    user: User 
-    errorMessage: String 
+    user: User!
+    message: String 
   }
-  
+
+  type RegisterResponse {
+  success: Boolean!
+  user: User
+  message: String
+}
+
+
   extend type Mutation {
-    signIn(email: String!, password: String!): AuthResponse!
-    signUp(email: String!, password: String!,username:String!): AuthResponse!
+    signIn(email: String!, password: String!): AuthResponseSignIn!
+    signUp(registerInput: RegisterInput!): RegisterResponse!
     signOut: Boolean!
   }
   
 `;
 
-export const SIGN_IN_MUTATION = gql`
-  mutation loginUser ($email: String!, $password: String!) {
-    signIn(email: $email, password: $password) {
-      success
-      token
-      user {
-        id
-        username
-      }
-      errorMessage
-    }
-  }
-`
 
-export const SIGN_UP_MUTATION = gql`
-  mutation registerUser($email: String!, $password: String!,$username: String!) {
-    signUp(email: $email, password: $password,username: $username) {
+export const SIGN_UP_MUTATION = gql`mutation StamMutation($username: String!,$email:String! $password: String!) {
+  signUp(username:$username,email:$email,password:$password){
       success
-      token
       user {
-        id
+        email
+        password
         username
       }
-      errorMessage
+      message
     }
-  }
-`
+}`
+
+export const SIGN_IN_MUTATION = gql`mutation signIn($email:String! $password: String!) {
+  signIn(email:$email,password:$password){
+      success
+      user {
+        email
+        password      
+       token
+      }
+       message
+    }
+}`
 
 
 export default typeDefs;

@@ -20,15 +20,18 @@ export default function SignIn() {
       setLoading(true);
       const { data } = await signInMutation({
         variables: {
-          email,
-          password,
+        email:  email,
+         password: password
         },
       });
-
+      console.log(data);
+      console.log(data.token);
+      console.log(data.signIn.token);
+      localStorage.setItem('token', data.signIn.token);  
       if (data.signIn.success) {
         navigate('/userpage');
       } else {
-        setError(data.signIn.errorMessage);
+        setError(data.signIn.message);
       }
     } catch (error) {
       console.error("Error signing in:", error);

@@ -23,37 +23,50 @@ const users = [
 
 const resolvers = {
     Query: {
-        userName:async (_:any, args:any) => {
-            const user = findUserById(args.id);
-            return user;
-        }
+        // userName:async (_:any, args:any) => {
+        //     const user = findUserById(args.id);
+        //     return user;
+        // }
 
     },
     Mutation: {
 
-        registerUser: async (_:any, args: any) => {
+        signIn: async (_: any, args: User) => {
             try {
-                console.log("args", args);
-                const data = await userRegister(args.registerInput);
+              const data = await userLogin(args.email, args.password);
+            //   console.log(data,'from resolvers');
+              if (!data) {
+                console.log('no data found');
+                return { success: false, message: "Login failed" }; 
+            }
+            const token = data.token;
+            const temp = data.user;
+            const user ={..._, token, temp}
+            const send = { success: true, message: "Login successful", user: user };    
+            console.log(send);
+              return (send);
+            } catch (error) {
+              throw new Error('Failed to login');
+            }
+          },
+          
+        signUp: async (_: any, args: User) => {
+            console.log(args.username,args.email,args.password,'hi from reslovers ');
+            const username = args.username
+            const email = args.email
+            const password = args.password
+            try {
+                console.log('in resolver:',username,email,password);
+                const data = await userRegister(username, email, password);
                 console.log(data);
-                return data; 
+                return (data); 
             } catch (error) {
-                throw new Error('Failed to register user');
+                throw new Error('Failed to register user');        
             }
-        },
-        loginUser: async (_: any, args: User) => {
-            try {
-                const data = await userLogin(args.email, args.password);
-                if (!data) {
-                    return null;
-                }
-                return data;
-            } catch (error) {
-                throw new Error('Failed to login');
-            }
+
         }
     }
-};
+}
 
 
 
