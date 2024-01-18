@@ -4,7 +4,11 @@ import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import App from './app/App.js';
-import './styles.css'
+import './styles.css';
+import { Provider, atom } from 'jotai';
+
+
+export const projectName = atom(' Project maneger');
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -16,10 +20,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <StrictMode>
-    <ApolloProvider client={client}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-    </ApolloProvider>
+    <Provider>
+      <ApolloProvider client={client}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ApolloProvider>
+    </Provider>
   </StrictMode>
 );

@@ -4,7 +4,7 @@ const typeDefs = gql`
   type User {
     id: String!
     username: String!
-    email: String
+    email: String!
     password: String
     token: String
     message: String
@@ -28,7 +28,7 @@ const typeDefs = gql`
   
   type AuthResponseSignIn {
     success: Boolean!
-    token: String 
+    token: String! 
     user: User!
     message: String 
   }
@@ -65,11 +65,12 @@ export const SIGN_IN_MUTATION = gql`mutation signIn($email:String! $password: St
   signIn(email:$email,password:$password){
       success
       user {
+         id 
         email
-        password      
-       token
+        username
       }
-       message
+      token
+      message
     }
 }`
 

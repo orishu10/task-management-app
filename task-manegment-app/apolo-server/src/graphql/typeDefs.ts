@@ -4,7 +4,7 @@ const typeDefs = gql`
   type User {
     id: String!
     username: String!
-    email: String
+    email: String!
     password: String
     token: String
   }
@@ -39,8 +39,9 @@ const typeDefs = gql`
 
   type LoginResponse {
     success: Boolean!
-    message: String!
+    token: String! 
     user: User!
+    message: String 
   }
   type Mutation {
   signUp(username:String!,email:String!,password:String!):RegisterResponse!

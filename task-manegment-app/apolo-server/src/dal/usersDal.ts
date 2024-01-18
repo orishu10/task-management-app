@@ -21,6 +21,13 @@ interface LoginResponse {
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+function verifyToken(token: string) {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function findUserByEmail(email: string) {
         return await User.findOne({ where: { email } });
@@ -38,13 +45,7 @@ function generateToken(userId: string): string {
     return jwt.sign({ id: userId }, JWT_SECRET);
 }
 
-function verifyToken(token: string) {
-    try {
-      return jwt.verify(token, JWT_SECRET);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+
   async function userRegister(username:string,email:string,password:string): Promise<{  message: string,userSignd :any,success :Boolean} | string> {
     if (email === "") console.log("write email!! not empy string \"\"");
     if (!username || !email || !password) {

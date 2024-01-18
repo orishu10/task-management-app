@@ -2,9 +2,21 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { Link, useNavigate } from "react-router-dom";
 import { SIGN_IN_MUTATION } from '../typeDefs.js';
+// SignIn.js
+import { isAuthenticatedAtom } from '../Atoms.js';
+import { useSetAtom } from "jotai";
+import { createProject } from "../trpc.js";
+
+
+
 
 
 export default function SignIn() {
+  const proj ={
+    title:'Project',
+    assignments: ['assignment','project'],
+    user_id : 'user'
+  }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,20 +27,25 @@ export default function SignIn() {
 
   const handleSubmit = async (e:any) => {
     e.preventDefault();
+   createProject(proj)
     setError(""); 
     try {
       setLoading(true);
       const { data } = await signInMutation({
         variables: {
-        email:  email,
-         password: password
+          email: email,
+          password: password
         },
       });
-      console.log(data);
-      console.log(data.token);
-      console.log(data.signIn.token);
+      
+      console.log(data.signIn.user);
       localStorage.setItem('token', data.signIn.token);  
+      console.log(localStorage.getItem('token'));
+      
       if (data.signIn.success) {
+const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
+
+        setIsAuthenticated(true);
         navigate('/userpage');
       } else {
         setError(data.signIn.message);

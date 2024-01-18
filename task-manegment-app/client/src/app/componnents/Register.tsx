@@ -20,9 +20,6 @@ export default function Register() {
     setError('');
     try {
       setLoading(true);
-      if (ApolloErorr) {
-        console.log(ApolloErorr.message);
-      }
       const { data } = await signUpMutation({
         variables: {
           username: name,
@@ -35,6 +32,7 @@ export default function Register() {
       }
       console.log(data.signUp.success);
       if (data.signUp.success) {
+        setError(data.signUp.message);
         navigate('/signin');
       } else {
         setError(data.signUp.message);
