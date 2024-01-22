@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useMutation } from "@apollo/client";
 import { Link, useNavigate } from "react-router-dom";
 import { SIGN_IN_MUTATION } from '../typeDefs.js';
-// SignIn.js
-import { isAuthenticatedAtom } from '../Atoms.js';
-import { useSetAtom } from "jotai";
+import { isAuthenticatedAtom, emailAtom, passwordAtom, errorAtom, loadingAtom } from '../Atoms.js';
+import { useAtom, useSetAtom } from "jotai";
 import { createProject } from "../trpc.js";
 
 
@@ -17,13 +16,15 @@ export default function SignIn() {
     assignments: ['assignment','project'],
     user_id : 'user'
   }
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  const [email, setEmail] = useAtom(emailAtom);
+  const [password, setPassword] = useAtom(passwordAtom);
+  const [error, setError] = useAtom(errorAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
   const navigate = useNavigate();
 
   const [signInMutation] = useMutation(SIGN_IN_MUTATION);
+  const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
 
   const handleSubmit = async (e:any) => {
     e.preventDefault();
@@ -37,14 +38,13 @@ export default function SignIn() {
           password: password
         },
       });
-      
       console.log(data.signIn.user);
+      console.log(data.signIn.user.id);
       localStorage.setItem('token', data.signIn.token);  
-      console.log(localStorage.getItem('token'));
-      
-      if (data.signIn.success) {
-const setIsAuthenticated = useSetAtom(isAuthenticatedAtom);
+      localStorage.setItem('user id', data.signIn.user.id);  
 
+      console.log(localStorage.getItem('token'));
+      if (data.signIn.success) {
         setIsAuthenticated(true);
         navigate('/userpage');
       } else {

@@ -20,7 +20,6 @@ const Project = sequelize.define<Model<ResponseUserAttributes, PostProject>>(
     },
     user_id: {
       type: DataTypes.STRING,
-      primaryKey: true,
     },
     assignments: {
       type: DataTypes.ARRAY(DataTypes.STRING),

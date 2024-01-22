@@ -9,24 +9,26 @@ import Register from './componnents/Register.js';
 import Projects from './componnents/Projects.js';
 import {createProject} from './trpc.js';
 import CreateProjectPage from './componnents/CreateProjectPage.js';
-import { isAuthenticatedAtom } from './Atoms.js';
 import { useAtom } from 'jotai';
+import {isAuthenticatedAtom  } from './Atoms.js';
+
 import Unauthenticated from './componnents/Unauthenticated.js';
+import AllProjects from './componnents/AllProjects.js';
 
 const App = () => {
-  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
 
   return (
     <div className={styles.body}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SignIn />} />
-        {isAuthenticated ? (
+        {isAuthenticatedAtom ? (
           <Route path="/userpage" element={<UserPage />} />
         ) : (
-          <Route path="/userpage" element={<Unauthenticated />} /> // Add the Unauthenticated route
+          <Route path="/userpage" element={<Unauthenticated />} /> 
         )}
         <Route path="/register" element={<Register />} />
+        <Route path="/AllProjects" element={<AllProjects />} />
         <Route path="/CreateProjectPage" element={<CreateProjectPage />} />
         <Route path="/projects" element={<Projects />} />
       </Routes>

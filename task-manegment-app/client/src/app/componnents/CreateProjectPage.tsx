@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
-import {projectName} from './UserPage.js'
+import {assignmentsAtom, projectNameAtom} from '../Atoms.js'
 import Header from './Header.js';
+import { createProject } from '../trpc.js';
+import { title } from 'process';
 
-interface Assignment {
+export interface Assignment {
   id: string;
   title: string;
   isComplete: boolean;
 }
 
-const assignmentsAtom = atom<Assignment[]>([]);
 
 function CreateProjectPage() {
-    const [name, setName] = useAtom(projectName);
+    const [name, setName] = useAtom(projectNameAtom);
     const [assignments, setAssignments] = useAtom(assignmentsAtom);
     const [newAssignmentTitle, setNewAssignmentTitle] = useState('');
+    console.log(name);
+    console.log(localStorage.getItem('projectName')); 
 
+ 
     const addAssignment = () => {
       const newAssignment = {
         id: uuidv4() , 
@@ -24,6 +28,7 @@ function CreateProjectPage() {
         isComplete: false
       };
       setAssignments([...assignments, newAssignment]);
+      createProject({ title: name, assignments: assignments, user_id: localStorage.getItem('user id')})
       setNewAssignmentTitle('');
     };
 
@@ -41,7 +46,7 @@ function CreateProjectPage() {
       <>
         <Header/>
         <div className='flex justify-center mt-6 md:mt-12'>
-        <div className='w-full max-w-md p-6'> {/* Adjust max width as needed */}
+        <div className='w-full max-w-md p-6'> 
           <h1 className='text-3xl font-bold mb-4'>{name}</h1>
           <div className='flex gap-4 mb-4'>
             <input

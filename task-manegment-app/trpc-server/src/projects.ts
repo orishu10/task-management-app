@@ -10,17 +10,16 @@ const PostProjectSchema = z.object({
 });
 
 export const appRouter = router({
-  getProjects: adminProcedures.query(() => {
+  getProjects: publicProcedure.query(() => {
     return Project.findAll();
   }),
     secretData : adminProcedures.query(() => {
       return Project.findAll();
     }),
-   postProject: adminProcedures
+    postProject: adminProcedures
     .input(PostProjectSchema) 
     .mutation(async ({ input }) => {
       console.log(input,'input from trpc mutation');
-      console.log('input from trpc mutation');
       const newProject = await Project.create({
         title: input.title,
         assignments: input.assignments,
@@ -28,4 +27,4 @@ export const appRouter = router({
       });
       return newProject;
     }),
-});
+  });

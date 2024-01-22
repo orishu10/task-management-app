@@ -1,14 +1,12 @@
-import { sequelize } from './DB';
-import Project from "./sequelize/modal";
-import { initTRPC  } from '@trpc/server';
+import { sequelize ,connectToDB } from './DB';
 import { createExpressMiddleware } from '@trpc/server/adapters/express';
-import { publicProcedure, router,t } from './trpc';
-import { z } from 'zod';
 import express from 'express';
 import cors from 'cors';
 import { appRouter } from './projects'; 
 import jwt from 'jsonwebtoken';
 import { createContext } from './context';
+import 'dotenv/config'
+
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 export function verifyToken(token: string) {
@@ -34,6 +32,7 @@ app.use('/trpc', createExpressMiddleware({
 }));
 
 app.listen(port, () => {
+  connectToDB();
   console.log(`Server is running on http://localhost:${port}`);
 });
 
