@@ -1,9 +1,10 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../DB';
+import { Assignment } from '../../../client/src/app/types/projects';
 
 interface PostProject {
   title: string;
-  assignments: string[];
+  assignments?: Assignment[];
   user_id: string;
 }
 
@@ -22,8 +23,8 @@ const Project = sequelize.define<Model<ResponseUserAttributes, PostProject>>(
       type: DataTypes.STRING,
     },
     assignments: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
+      type: DataTypes.JSONB, 
+      allowNull: true
     },
     project_id: {
       type: DataTypes.UUID,

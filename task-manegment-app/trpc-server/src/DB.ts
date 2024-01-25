@@ -1,5 +1,4 @@
 import { Sequelize } from 'sequelize';
-// We didn't need to destructure the result here - the results were returned directly
 
 const ConnectionString = "postgres://ori:Ori123456!@localhost:5432/postgres";
 

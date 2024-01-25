@@ -17,9 +17,7 @@ export async function createContext({
     console.log(token,'test token');
     console.log(JWT_SECRET, 'test token secret');
     if (token) {
-        jwt.verify(token, JWT_SECRET);
-        console.log(token, 'valid token');
-        
+        jwt.verify(token, JWT_SECRET);        
         return {
           req,
           res,

@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
-import { Project } from './trpc.js';
-import { Assignment } from './componnents/CreateProjectPage.js';
+import { Project } from './types/projects.js';
+import { Assignment } from './types/projects.js';
 
 export const projectNameAtom = atom("");
 export const showModalAtom = atom(false);
@@ -11,5 +11,7 @@ export const passwordAtom = atom("");
 export const errorAtom = atom("");
 export const loadingAtom = atom(false);
 export const assignmentsAtom = atom<Assignment[]>([]);
+export const projectIdAtom = atom('');
+export const descriptionAtom = atom('');
 
 

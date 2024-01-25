@@ -1,27 +1,21 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import {
-  projectNameAtom,
-  showModalAtom,
-  errorAtom,
-} from '../Atoms.js';
+import { projectNameAtom, showModalAtom, errorAtom, projectIdAtom } from '../Atoms.js';
 import { createProject } from '../trpc.js';
+
+
 
 export default function UserPage() {
   const [showModal, setShowModal] = useAtom(showModalAtom);
   const [error, setError] = useAtom(errorAtom);
   const [name, setName] = useAtom(projectNameAtom);
+  const [projectId, setProjectId] = useAtom(projectIdAtom);
   const navigate = useNavigate();
   const style = 'p-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-40';
 
   const handleCreateProject = () => {
     console.log('Create New Project Clicked');
-    createProject({
-      title: name,
-      assignments: [],
-      user_id: localStorage.getItem('user id') || '', 
-    });
     setShowModal(true);
   };
 
@@ -33,6 +27,25 @@ export default function UserPage() {
     } catch (error) {
       console.error('Error loading projects:', error);
       setError('Error loading projects');
+    }
+  };
+
+  const handleSendProject = async () => {
+    console.log('create project button clicked');
+    try {
+      const data = await createProject({
+        title: name,
+        user_id: localStorage.getItem('userId') || '',
+      });
+      localStorage.setItem('title', data.title);
+      localStorage.setItem('ProjectId', data.project_id);
+      console.log(data, 'projects data');
+      setName(data.title);
+      navigate('/CreateProjectPage')
+      setProjectId(data.project_id);
+    } catch (error) {
+      console.error('Error creating project:', error);
+      setError('Error creating project');
     }
   };
 
@@ -86,7 +99,7 @@ export default function UserPage() {
                         onChange={(e) => {
                           setName(e.target.value);
                           console.log(e.target.value);
-                          // localStorage.setItem('projectName', e.target.value);
+                          localStorage.setItem('projectName', e.target.value);
                         }}
                       />
                     </form>
@@ -103,7 +116,9 @@ export default function UserPage() {
                     <button
                       className="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                       type="button"
-                      onClick={() => navigate('/CreateProjectPage')}
+                      onClick={() => {
+                        handleSendProject();
+                      }}
                     >
                       Create
                     </button>

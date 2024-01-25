@@ -14,6 +14,7 @@ import {isAuthenticatedAtom  } from './Atoms.js';
 
 import Unauthenticated from './componnents/Unauthenticated.js';
 import AllProjects from './componnents/AllProjects.js';
+import { OpenLayersmap } from './componnents/OpenLayerMap.js';
 
 const App = () => {
 
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="/userpage" element={<Unauthenticated />} /> 
         )}
         <Route path="/register" element={<Register />} />
+        <Route path="/map" element={<OpenLayersmap />} />
         <Route path="/AllProjects" element={<AllProjects />} />
         <Route path="/CreateProjectPage" element={<CreateProjectPage />} />
         <Route path="/projects" element={<Projects />} />
