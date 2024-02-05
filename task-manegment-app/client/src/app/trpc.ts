@@ -1,6 +1,6 @@
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import { AppRouter } from '../../../trpc-server/src/server.js';
-import { Project, createProjectType, ProjectFromDB } from './types/projects.js';
+import { Project, createProjectType, ProjectFromDB, Assignment } from './types/projects.js';
 
 
 const token = localStorage.getItem('token');
@@ -74,5 +74,16 @@ export async function getProject(project_id:any): Promise<Project> {
     throw error;
   }
 }
+export async function deleteAssignmentsFromProject(project_id:any, assignment:any): Promise<Project> {
+  try {
+    const projects = await client.deleteAssignments.mutate(project_id, assignment)
+    return projects as Project;
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error;
+  }
+}
+
+
 
 

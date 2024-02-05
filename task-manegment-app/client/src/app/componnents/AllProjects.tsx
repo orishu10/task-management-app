@@ -2,7 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useAtom } from 'jotai';
 import { projectsAtom } from '../Atoms.js';
 import { seeProjectsByUserId } from '../trpc.js';
-import { Assignment } from '../types/projects.js';
+import { useNavigate } from 'react-router-dom';
+import { Project } from '../types/projects.js';
 import Header from './Header.js';
 
 function AllProjects() {
@@ -10,12 +11,18 @@ function AllProjects() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const nav = useNavigate();
+
+  const navigateToProject = (project: Project) => () => {
+    localStorage.setItem('projectId', project.project_id || '');
+    nav('/CreateProjectPage');
+  };
 
   const getProjects = useCallback(async () => {
     if (!userId) return;
     setIsLoading(true);
     try {
-      const data = await seeProjectsByUserId({user_id:userId});
+      const data = await seeProjectsByUserId({ user_id: userId });
       setProjects(data);
     } catch (error) {
       if (error instanceof Error) {
@@ -37,43 +44,34 @@ function AllProjects() {
   }, [getProjects]);
 
   if (isLoading) {
-    return <p>Loading projects...</p>;
+    return <p className="text-center mt-20">Loading projects...</p>;
   }
 
   if (error) {
-    return <p className="text-red-500">Error: {error}</p>;
+    return <p className="text-red-500 text-center mt-20">Error: {error}</p>;
   }
 
   return (
     <>
-    <Header/>
-
-    <h1 className="flex  justify-center mt-12 text-3xl "> My Projects </h1>
-    <div className="flex flex-col md:flex-row gap-4 justify-center mt-6 md:mt-12">
-    <ul className="space-y-4">
-        {projects.map((project: any, i) => (
-          <li key={i} className="p-4 border border-gray-200 rounded shadow">
-            <h3 className="text-xl font-bold text-blue-600 mb-2">
-              {project.title}
-            </h3>
-            <ul className="list-inside list-disc pl-4">
-              {project.assignments && project.assignments.length > 0 ? (
-                project.assignments.map((assignment:Assignment, index:number) => (
-                  <li key={index} className="text-gray-700">
-                    <li>{assignment.title}</li>
-                  </li>
-                ))
-              ) : (
-                <li className="text-gray-700">No Assignments</li>
-              )}
-            </ul>
-          </li>
+      <Header />
+      <h1 className="text-3xl font-semibold text-center mt-12 mb-6 text-gray-800">My Projects</h1>
+      <div className="flex flex-wrap justify-center gap-8 mt-6">
+        {projects.map((project, i) => (
+          <div key={i} className="p-6 border border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out w-full md:w-5/12">
+            <h3 className="text-xl font-bold text-blue-600 mb-2">{project.title}</h3>
+            <div className="flex flex-col justify-between h-full">
+              {/* <p className="text-gray-600 mb-4">{project}</p> Assuming there's a description to add some content */}
+              <button
+                onClick={navigateToProject(project)}
+                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow hover:shadow-md transition ease-in-out duration-150 self-end"
+              >
+                Go to Project
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
-    
-    </div>
+      </div>
     </>
-
   );
 }
 
